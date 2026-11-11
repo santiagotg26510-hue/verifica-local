@@ -1,170 +1,268 @@
 
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VERIFICA LOCAL</title>
-
+<title>VERIFICA LOCAL | Inteligencia informativa</title>
 <style>
-* {
-    box-sizing: border-box;
-}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
-body {
-    margin: 0;
-    padding: 20px;
-    min-height: 100vh;
-    background: #071426;
-    color: white;
-    font-family: Arial, sans-serif;
+:root {
+  --bg:#070b14;
+  --panel:#101827;
+  --blue:#168cff;
+  --cyan:#35d9ff;
+  --text:#f3f7ff;
+  --muted:#91a1b8;
 }
-
-main {
-    max-width: 700px;
-    margin: 50px auto;
-    padding: 28px;
-    background: #10243d;
-    border-radius: 18px;
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:
+    radial-gradient(ellipse at 50% 0%,#12315a 0%,transparent 48%),
+    linear-gradient(180deg,#080e1b,#060911 75%);
+  color:var(--text);
+  font-family:Inter,Arial,sans-serif;
+  min-height:100vh;
 }
-
-h1 {
-    color: #53b7ff;
-    text-align: center;
-    font-size: 32px;
+header{
+  height:76px;
+  padding:0 7%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid #ffffff12;
+  background:#080e1bd9;
 }
-
-p {
-    text-align: center;
-    color: #c5d7e8;
+.logo{font-weight:900;letter-spacing:2px;font-size:18px}
+.logo span{color:var(--cyan)}
+.status{font-size:11px;color:#77e8b0;letter-spacing:1px}
+.status:before{content:"●";margin-right:8px}
+main{max-width:1000px;margin:auto;padding:75px 22px 50px}
+.tag{
+  display:inline-block;
+  border:1px solid #168cff66;
+  color:#64caff;
+  padding:8px 13px;
+  border-radius:30px;
+  font-size:11px;
+  letter-spacing:2px;
+  background:#168cff12;
 }
-
-textarea {
-    width: 100%;
-    height: 160px;
-    padding: 15px;
-    border-radius: 10px;
-    border: 1px solid #34516e;
-    background: #f5f8fc;
-    font-size: 16px;
-    resize: vertical;
+h1{
+  font-size:clamp(43px,8vw,76px);
+  line-height:1.02;
+  letter-spacing:-4px;
+  margin:24px 0 18px;
+  font-weight:900;
 }
-
-button {
-    width: 100%;
-    padding: 16px;
-    margin-top: 15px;
-    background: #1689e8;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 17px;
-    font-weight: bold;
-    cursor: pointer;
+h1 span{
+  background:linear-gradient(90deg,#fff,#36baff);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
 }
-
-button:disabled {
-    opacity: 0.6;
-    cursor: wait;
+.intro{color:var(--muted);font-size:16px;line-height:1.7;max-width:600px}
+.panel{
+  margin-top:45px;
+  background:linear-gradient(145deg,#142238,#0c1422);
+  border:1px solid #ffffff18;
+  border-radius:20px;
+  padding:25px;
+  box-shadow:0 20px 70px #0008;
 }
-
-#resultado {
-    display: none;
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-    background: #071426;
-    padding: 18px;
-    border-radius: 10px;
-    margin-top: 20px;
-    line-height: 1.6;
+.panel-title{font-size:14px;font-weight:700;margin-bottom:15px}
+textarea{
+  width:100%;
+  min-height:150px;
+  resize:vertical;
+  background:#080f1c;
+  border:1px solid #293d58;
+  border-radius:12px;
+  padding:18px;
+  color:white;
+  font:15px Inter,Arial;
+  outline:none;
 }
-
-footer {
-    text-align: center;
-    color: #8298ae;
-    font-size: 12px;
-    margin-top: 25px;
+textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #35d9ff16}
+textarea::placeholder{color:#71829b}
+.actions{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:15px;margin-top:17px;flex-wrap:wrap
+}
+.hint{font-size:11px;color:var(--muted)}
+button{
+  border:0;border-radius:10px;padding:15px 23px;
+  background:linear-gradient(100deg,#087bfa,#20c5ef);
+  color:white;font-weight:800;font-size:13px;
+  cursor:pointer;letter-spacing:.5px;
+  box-shadow:0 5px 25px #078bfa44;
+}
+button:disabled{opacity:.6;cursor:wait}
+.result{
+  display:none;margin-top:25px;padding:22px;
+  border-radius:15px;background:#080f1c;
+  border:1px solid #ffffff20;line-height:1.7;
+  overflow-wrap:anywhere
+}
+.result h3{margin-top:0;color:var(--cyan)}
+.result a{color:#5dcaff;overflow-wrap:anywhere}
+.result pre{white-space:pre-wrap;overflow-wrap:anywhere;font:14px Inter,Arial}
+.loading{display:none;color:var(--cyan);margin-top:20px;font-size:13px}
+.features{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:15px;margin-top:45px
+}
+.feature{
+  padding:20px;background:#101827a8;
+  border:1px solid #ffffff12;border-radius:14px
+}
+.feature b{display:block;font-size:13px;margin-bottom:9px}
+.feature p{font-size:12px;color:var(--muted);line-height:1.6;margin:0}
+.symbol{font-size:23px;margin-bottom:13px}
+footer{
+  text-align:center;color:#66758c;font-size:11px;
+  padding:35px 15px;border-top:1px solid #ffffff10
+}
+@media(max-width:650px){
+  header{padding:0 20px}
+  main{padding-top:55px}
+  h1{letter-spacing:-2px}
+  .features{grid-template-columns:1fr}
+  .panel{padding:17px}
+  .actions button{width:100%}
 }
 </style>
 </head>
-
 <body>
+<header>
+  <div class="logo">VERIFICA<span> LOCAL</span></div>
+  <div class="status">PLATAFORMA INFORMATIVA</div>
+</header>
+
 <main>
-    <h1>VERIFICA LOCAL</h1>
+  <div class="tag">INTELIGENCIA · INFORMACIÓN · VERIFICACIÓN</div>
 
-    <p>Comprueba una noticia antes de compartirla.</p>
+  <h1>LA VERDAD<br>NO SE <span>ADIVINA.</span></h1>
 
-    <form id="formulario">
-        <textarea
-            id="noticia"
-            placeholder="Pega aquí la noticia que quieres verificar..."
-            required
-        ></textarea>
+  <p class="intro">
+    Analiza noticias, contrasta información y descubre qué tan confiable
+    es una afirmación. Antes de compartir, verifica.
+  </p>
 
-        <button id="boton" type="submit">
-            VERIFICAR NOTICIA
-        </button>
-    </form>
+  <section class="panel">
+    <div class="panel-title">◈ ¿QUÉ INFORMACIÓN QUIERES VERIFICAR?</div>
+    <textarea id="noticia" placeholder="Pega aquí una noticia, titular o afirmación que quieras investigar..."></textarea>
+    <div class="actions">
+      <span class="hint">Escribe una afirmación lo más completa posible.</span>
+      <button id="verificar">INICIAR VERIFICACIÓN ↗</button>
+    </div>
+    <div class="loading" id="loading">◉ ANALIZANDO INFORMACIÓN Y CONSULTANDO FUENTES...</div>
+    <div class="result" id="resultado"></div>
+  </section>
 
-    <div id="resultado"></div>
-
-    <footer>
-        VERIFICA LOCAL | Información antes de compartir
-    </footer>
+  <section class="features">
+    <div class="feature">
+      <div class="symbol">⌕</div>
+      <b>Análisis informativo</b>
+      <p>Examina la afirmación y su contexto.</p>
+    </div>
+    <div class="feature">
+      <div class="symbol">◎</div>
+      <b>Contraste de fuentes</b>
+      <p>Consulta información disponible para comparar datos.</p>
+    </div>
+    <div class="feature">
+      <div class="symbol">◈</div>
+      <b>Evaluación crítica</b>
+      <p>Ayuda a reconocer información dudosa o engañosa.</p>
+    </div>
+  </section>
 </main>
 
+<footer>
+  VERIFICA LOCAL © 2026 · PIENSA ANTES DE COMPARTIR
+  <br><br>
+  La evaluación automática puede equivocarse. Consulta las fuentes originales.
+</footer>
+
 <script>
-const formulario = document.getElementById("formulario");
-const noticia = document.getElementById("noticia");
-const boton = document.getElementById("boton");
+const boton = document.getElementById("verificar");
+const entrada = document.getElementById("noticia");
 const resultado = document.getElementById("resultado");
+const loading = document.getElementById("loading");
 
-formulario.addEventListener("submit", async function(event) {
-    event.preventDefault();
+function escapar(texto) {
+  return String(texto).replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",
+    '"':"&quot;","'":"&#39;"
+  }[c]));
+}
 
-    const texto = noticia.value.trim();
+function mostrarResultado(data) {
+  resultado.style.display = "block";
+  resultado.innerHTML = "";
 
-    if (!texto) {
-        resultado.style.display = "block";
-        resultado.textContent = "Escribe una noticia primero.";
-        return;
+  const titulo = document.createElement("h3");
+  titulo.textContent = "RESULTADO DEL ANÁLISIS";
+  resultado.appendChild(titulo);
+
+  const contenido = data.resultado ?? data;
+  const pre = document.createElement("pre");
+
+  if (typeof contenido === "string") {
+    pre.textContent = contenido;
+  } else {
+    pre.textContent = JSON.stringify(contenido, null, 2);
+  }
+
+  resultado.appendChild(pre);
+}
+
+boton.addEventListener("click", async () => {
+  const noticia = entrada.value.trim();
+
+  if (!noticia) {
+    alert("Escribe una noticia para comenzar.");
+    return;
+  }
+
+  boton.disabled = true;
+  boton.textContent = "ANALIZANDO...";
+  loading.style.display = "block";
+  resultado.style.display = "none";
+
+  try {
+    const respuesta = await fetch("/api/verificar", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({noticia})
+    });
+
+    const data = await respuesta.json();
+
+    if (!respuesta.ok) {
+      throw new Error(data.error || "No se pudo completar la verificación.");
     }
 
-    boton.disabled = true;
-    boton.textContent = "ANALIZANDO...";
+    mostrarResultado(data);
+
+  } catch (error) {
     resultado.style.display = "block";
-    resultado.textContent = "Estamos investigando la noticia. Espera un momento...";
-
-    try {
-        const respuesta = await fetch("/api/verificar", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                noticia: texto
-            })
-        });
-
-        const datos = await respuesta.json();
-
-        if (!respuesta.ok) {
-            throw new Error(datos.error || "Error al verificar.");
-        }
-
-        resultado.textContent = datos.resultado ||
-            "No se recibió un resultado válido.";
-
-    } catch (error) {
-        resultado.textContent =
-            "No se pudo completar la verificación: " + error.message;
-
-    } finally {
-        boton.disabled = false;
-        boton.textContent = "VERIFICAR NOTICIA";
-    }
+    resultado.innerHTML = "";
+    const titulo = document.createElement("h3");
+    titulo.textContent = "NO SE COMPLETÓ EL ANÁLISIS";
+    const mensaje = document.createElement("p");
+    mensaje.textContent = error.message;
+    resultado.append(titulo, mensaje);
+  } finally {
+    boton.disabled = false;
+    boton.textContent = "INICIAR VERIFICACIÓN ↗";
+    loading.style.display = "none";
+  }
 });
 </script>
-
 </body>
 </html>
