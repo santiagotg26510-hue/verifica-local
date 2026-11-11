@@ -18,81 +18,97 @@ def verificar():
     noticia = data.get("noticia", "").strip()
 
     if not noticia:
-        return jsonify({
-            "error": "Escribe una noticia para verificar."
-        }), 400
+        return jsonify({"error": "Escribe una noticia."}), 400
 
     if not API_KEY:
-        return jsonify({
-            "error": "Falta configurar la API Key de Gemini."
-        }), 500
+        return jsonify({"error": "No está configurada la API Key."}), 500
 
     url = (
         "https://generativelanguage.googleapis.com/v1beta/models/"
-        + MODEL
-        + ":generateContent?key="
-        + API_KEY
+        + MODEL + ":generateContent"
     )
 
     prompt = f"""
-    Eres un asistente especializado en verificación de noticias.
-
-    Analiza cuidadosamente la siguiente noticia:
-
+    Actúa como verificador de información.
+    Analiza esta afirmación:
     {noticia}
 
-    Contrasta la información utilizando Google Search.
+    Contrasta los datos usando Google Search.
+    Responde en español e incluye:
+    VEREDICTO: VERDADERA, FALSA, ENGAÑOSA o NO COMPROBADA.
+    RESUMEN:
+    EVIDENCIAS:
+    FUENTES Y ENLACES:
+    CONFIANZA: alta, media o baja.
 
-    Responde en español con:
-    1. VEREDICTO: VERDADERA, FALSA, ENGAÑOSA o NO COMPROBADA.
-    2. RESUMEN de lo que afirma.
-    3. EVIDENCIAS que apoyen o contradigan la afirmación.
-    4. FUENTES consultadas con sus enlaces.
-    5. NIVEL DE CONFIANZA: alto, medio o bajo.
-
-    No inventes fuentes ni afirmes que algo es verdadero
-    cuando no existan pruebas suficientes.
+    No inventes información ni fuentes.
+    Si no hay pruebas suficientes, indícalo.
     """
 
     payload = {
         "contents": [
-            {
-                "parts": [
-                    {"text": prompt}
-                ]
-            }
+            {"parts": [{"text": prompt}]}
         ],
         "tools": [
-            {
-                "google_search": {}
-            }
+            {"google_search": {}}
         ]
     }
 
     try:
         respuesta = requests.post(
             url,
+            params={"key": API_KEY},
             json=payload,
-            timeout=60
+            timeout=90
         )
 
-        respuesta.raise_for_status()
+        if not respuesta.ok:
+            try:
+                error = respuesta.json().get("error", {})
+                mensaje = error.get("message", "Error desconocido")
+            except Exception:
+                mensaje = "Google rechazó la solicitud."
+
+            return jsonify({
+                "error": f"Google API ({respuesta.status_code}): {mensaje}"
+            }), 502
+
         resultado = respuesta.json()
 
-        texto = resultado["candidates"][0]["content"]["parts"][0]["text"]
+        candidatos = resultado.get("candidates", [])
+        if not candidatos:
+            return jsonify({
+                "error": "Google no devolvió una respuesta. Intenta otra vez."
+            }), 502
 
-        return jsonify({
-            "resultado": texto
-        })
+        partes = candidatos[0].get("content", {}).get("parts", [])
+        texto = "\n".join(
+            parte.get("text", "")
+            for parte in partes
+            if parte.get("text")
+        )
 
-    except requests.exceptions.HTTPError:
+        if not texto:
+            return jsonify({
+                "error": "La respuesta de Google llegó vacía."
+            }), 502
+
+        return jsonify({"resultado": texto})
+
+    except requests.exceptions.Timeout:
         return jsonify({
-            "error": "Google no pudo procesar la noticia. Revisa el modelo y la API Key."
+            "error": "Google tardó demasiado en responder."
+        }), 504
+
+    except requests.exceptions.RequestException:
+        return jsonify({
+            "error": "No se pudo conectar con Google."
         }), 502
 
     except Exception:
+        app.logger.exception("Error inesperado")
         return jsonify({
-            "error": "No se pudo completar la verificación. Intenta nuevamente."
+            "error": "Ocurrió un error interno del servidor."
         }), 500
 
 
@@ -101,3 +117,4 @@ if __name__ == "__main__":
         host="0.0.0.0",
         port=int(os.environ.get("PORT", 5000))
     )
+    
